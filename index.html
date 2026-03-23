@@ -1,0 +1,856 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The 1920s Concept Map</title>
+  <style>
+    :root{
+      --bg-1:#030716;
+      --bg-2:#081128;
+      --bg-3:#02040c;
+      --panel:rgba(9,17,35,.82);
+      --panel-strong:rgba(7,13,28,.94);
+      --line:rgba(255,214,125,.18);
+      --line-strong:rgba(255,214,125,.40);
+      --text:#f7f2e8;
+      --muted:#d8cdbb;
+      --gold:#ffd67d;
+      --blue:#7edcff;
+      --shadow:0 20px 55px rgba(0,0,0,.40);
+      --radius-xl:28px;
+      --radius-lg:22px;
+      --radius-md:16px;
+      --max:1360px;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      margin:0;
+      font-family:"Segoe UI", Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top, rgba(74,106,255,.14), transparent 26%),
+        radial-gradient(circle at 18% 12%, rgba(255,214,125,.08), transparent 18%),
+        linear-gradient(180deg, var(--bg-1), var(--bg-2) 48%, var(--bg-3));
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    .stars,
+    .glow-layer{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .stars{
+      background-image:
+        radial-gradient(circle at 5% 12%, rgba(126,220,255,.75) 0 2px, transparent 3px),
+        radial-gradient(circle at 10% 26%, rgba(255,214,125,.75) 0 2px, transparent 3px),
+        radial-gradient(circle at 16% 42%, rgba(126,220,255,.46) 0 2px, transparent 3px),
+        radial-gradient(circle at 22% 18%, rgba(255,214,125,.56) 0 2px, transparent 3px),
+        radial-gradient(circle at 28% 70%, rgba(126,220,255,.42) 0 2px, transparent 3px),
+        radial-gradient(circle at 34% 47%, rgba(255,214,125,.48) 0 2px, transparent 3px),
+        radial-gradient(circle at 42% 30%, rgba(126,220,255,.32) 0 2px, transparent 3px),
+        radial-gradient(circle at 49% 82%, rgba(255,214,125,.42) 0 2px, transparent 3px),
+        radial-gradient(circle at 58% 20%, rgba(126,220,255,.5) 0 2px, transparent 3px),
+        radial-gradient(circle at 64% 62%, rgba(255,214,125,.42) 0 2px, transparent 3px),
+        radial-gradient(circle at 72% 38%, rgba(126,220,255,.42) 0 2px, transparent 3px),
+        radial-gradient(circle at 81% 16%, rgba(255,214,125,.58) 0 2px, transparent 3px),
+        radial-gradient(circle at 88% 74%, rgba(126,220,255,.4) 0 2px, transparent 3px),
+        radial-gradient(circle at 94% 28%, rgba(255,214,125,.72) 0 2px, transparent 3px);
+      opacity:.92;
+    }
+
+    .glow-layer{
+      background:
+        radial-gradient(circle at center, rgba(255,255,255,.03), transparent 45%),
+        radial-gradient(circle at 30% 35%, rgba(126,220,255,.05), transparent 22%),
+        radial-gradient(circle at 70% 40%, rgba(255,214,125,.05), transparent 24%);
+    }
+
+    .page{
+      position:relative;
+      z-index:1;
+      width:min(var(--max), calc(100% - 28px));
+      margin:0 auto;
+      padding:18px 0 28px;
+    }
+
+    .topbar,
+    .hero,
+    .branch-section,
+    .detail-panel,
+    .sources-section{
+      background:linear-gradient(180deg, rgba(10,18,36,.88), rgba(6,12,25,.96));
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(14px);
+      border-radius:var(--radius-xl);
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:14px 18px;
+      margin-bottom:18px;
+      position:sticky;
+      top:10px;
+      z-index:15;
+    }
+
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+
+    .brand-top{
+      color:var(--gold);
+      font-size:.8rem;
+      font-weight:800;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+    }
+
+    .brand-title{
+      font-size:1.05rem;
+      font-weight:800;
+      color:var(--text);
+    }
+
+    .topbar-controls{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .menu-wrap{
+      position:relative;
+    }
+
+    .menu-btn{
+      border:1px solid var(--line);
+      color:var(--text);
+      border-radius:16px;
+      padding:12px 16px;
+      font-size:1rem;
+      font-weight:800;
+      background:
+        radial-gradient(circle at top left, rgba(126,220,255,.08), transparent 35%),
+        linear-gradient(180deg, rgba(13,22,42,.95), rgba(8,14,28,.98));
+      box-shadow:var(--shadow);
+      transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+      cursor:pointer;
+      min-width:190px;
+      text-align:left;
+    }
+
+    .menu-btn:hover{
+      transform:translateY(-2px);
+      border-color:var(--line-strong);
+    }
+
+    .menu-btn.open{
+      border-color:var(--line-strong);
+      box-shadow:
+        0 20px 44px rgba(0,0,0,.38),
+        0 0 0 1px rgba(255,214,125,.10) inset,
+        0 0 22px rgba(126,220,255,.08);
+    }
+
+    .dropdown{
+      position:absolute;
+      top:calc(100% + 10px);
+      right:0;
+      width:260px;
+      padding:10px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:
+        radial-gradient(circle at top left, rgba(126,220,255,.06), transparent 28%),
+        linear-gradient(180deg, rgba(12,20,38,.97), rgba(7,12,24,.99));
+      box-shadow:var(--shadow);
+      display:none;
+      gap:8px;
+      z-index:20;
+    }
+
+    .dropdown.open{
+      display:grid;
+    }
+
+    .dropdown button{
+      width:100%;
+      text-align:left;
+      border:1px solid transparent;
+      background:rgba(255,255,255,.02);
+      color:var(--text);
+      padding:12px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:700;
+      transition:background .18s ease, border-color .18s ease, transform .18s ease, color .18s ease;
+    }
+
+    .dropdown button:hover{
+      background:rgba(255,255,255,.05);
+      border-color:var(--line);
+      transform:translateX(2px);
+    }
+
+    .dropdown button.active{
+      background:rgba(255,214,125,.08);
+      border-color:var(--line-strong);
+      color:var(--gold);
+    }
+
+    .hero{
+      padding:28px 24px 24px;
+      margin-bottom:18px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at top right, rgba(126,220,255,.12), transparent 28%),
+        radial-gradient(circle at left center, rgba(255,214,125,.08), transparent 22%);
+      pointer-events:none;
+    }
+
+    .eyebrow{
+      margin:0 0 10px;
+      color:var(--gold);
+      font-size:.84rem;
+      font-weight:800;
+      letter-spacing:.2em;
+      text-transform:uppercase;
+    }
+
+    h1,h2,h3,h4,p{
+      margin-top:0;
+    }
+
+    h1{
+      margin-bottom:12px;
+      font-size:clamp(2.1rem, 4vw, 4.2rem);
+      line-height:1.04;
+    }
+
+    .subtitle{
+      margin:0;
+      max-width:920px;
+      font-size:1.04rem;
+      line-height:1.7;
+      color:var(--muted);
+    }
+
+    .main-grid{
+      display:grid;
+      grid-template-columns:420px minmax(0, 1fr);
+      gap:18px;
+      align-items:start;
+      margin-bottom:18px;
+    }
+
+    .branch-section{
+      padding:18px;
+    }
+
+    .section-head{
+      margin-bottom:14px;
+    }
+
+    .section-head h2{
+      margin:0 0 8px;
+      font-size:1.45rem;
+    }
+
+    .section-head p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.62;
+    }
+
+    .branch-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+
+    .branch-card{
+      border:1px solid var(--line);
+      background:
+        radial-gradient(circle at top left, rgba(126,220,255,.08), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(255,214,125,.05), transparent 26%),
+        linear-gradient(180deg, rgba(9,16,33,.9), rgba(5,10,22,.97));
+      box-shadow:var(--shadow);
+      border-radius:18px;
+      padding:16px 16px 14px;
+      text-align:left;
+      color:var(--text);
+      cursor:pointer;
+      transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .branch-card:hover{
+      transform:translateY(-3px);
+      border-color:var(--line-strong);
+    }
+
+    .branch-card.active{
+      border-color:var(--line-strong);
+      box-shadow:
+        0 20px 44px rgba(0,0,0,.4),
+        0 0 0 1px rgba(255,214,125,.10) inset,
+        0 0 24px rgba(126,220,255,.10);
+      transform:translateY(-2px);
+    }
+
+    .branch-title{
+      color:var(--gold);
+      font-size:1.08rem;
+      font-weight:800;
+      margin-bottom:8px;
+    }
+
+    .branch-preview{
+      color:var(--muted);
+      line-height:1.55;
+      font-size:.95rem;
+    }
+
+    .detail-panel{
+      padding:22px;
+      min-height:100%;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .detail-panel::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(90deg, transparent, rgba(255,255,255,.02), transparent);
+      transform:translateX(-100%);
+      animation:panelSweep 3.2s ease infinite;
+      pointer-events:none;
+    }
+
+    @keyframes panelSweep{
+      0%{ transform:translateX(-100%); }
+      45%{ transform:translateX(100%); }
+      100%{ transform:translateX(100%); }
+    }
+
+    .panel-content{
+      position:relative;
+      z-index:1;
+    }
+
+    .panel-head{
+      margin-bottom:16px;
+    }
+
+    .panel-head h2{
+      margin:0 0 10px;
+      color:var(--gold);
+      font-size:2rem;
+    }
+
+    .panel-head p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.68;
+      max-width:860px;
+    }
+
+    .panel-grid{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:16px;
+    }
+
+    .panel-box{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      background:rgba(255,255,255,.02);
+    }
+
+    .panel-box h3{
+      margin:0 0 10px;
+      color:var(--blue);
+      font-size:.98rem;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .panel-box ul{
+      margin:0;
+      padding-left:18px;
+    }
+
+    .panel-box li{
+      color:var(--muted);
+      line-height:1.62;
+      margin-bottom:8px;
+    }
+
+    .big-line{
+      margin:0;
+      color:var(--text);
+      font-size:1.03rem;
+      line-height:1.7;
+    }
+
+    .panel-note{
+      margin-top:12px;
+      color:var(--blue);
+      font-size:.82rem;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .anim-rise{ animation:riseIn .32s ease both; }
+    .anim-left{ animation:slideLeft .32s ease both; }
+    .anim-right{ animation:slideRight .32s ease both; }
+    .anim-zoom{ animation:zoomIn .32s ease both; }
+    .anim-flip{ animation:flipFade .36s ease both; transform-origin:center top; }
+    .anim-glow{ animation:glowIn .36s ease both; }
+    .anim-drop{ animation:dropIn .32s ease both; }
+    .anim-soft{ animation:softOpen .32s ease both; }
+
+    @keyframes riseIn{
+      from{ opacity:0; transform:translateY(12px); }
+      to{ opacity:1; transform:translateY(0); }
+    }
+    @keyframes slideLeft{
+      from{ opacity:0; transform:translateX(14px); }
+      to{ opacity:1; transform:translateX(0); }
+    }
+    @keyframes slideRight{
+      from{ opacity:0; transform:translateX(-14px); }
+      to{ opacity:1; transform:translateX(0); }
+    }
+    @keyframes zoomIn{
+      from{ opacity:0; transform:scale(.98); }
+      to{ opacity:1; transform:scale(1); }
+    }
+    @keyframes flipFade{
+      from{ opacity:0; transform:perspective(900px) rotateX(-10deg) translateY(10px); }
+      to{ opacity:1; transform:perspective(900px) rotateX(0) translateY(0); }
+    }
+    @keyframes glowIn{
+      from{ opacity:0; box-shadow:0 0 0 rgba(255,214,125,0); }
+      to{ opacity:1; box-shadow:var(--shadow), 0 0 22px rgba(255,214,125,.07); }
+    }
+    @keyframes dropIn{
+      from{ opacity:0; transform:translateY(-10px) scale(.99); }
+      to{ opacity:1; transform:translateY(0) scale(1); }
+    }
+    @keyframes softOpen{
+      from{ opacity:0; transform:scale(1.01); filter:blur(2px); }
+      to{ opacity:1; transform:scale(1); filter:blur(0); }
+    }
+
+    .sources-section{
+      padding:22px;
+    }
+
+    .sources-section h2{
+      margin:0 0 14px;
+      font-size:1.6rem;
+    }
+
+    .source-list{
+      display:grid;
+      gap:12px;
+    }
+
+    .source-link{
+      display:block;
+      text-decoration:none;
+      color:var(--text);
+      padding:15px 16px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(13,20,36,.88), rgba(9,14,26,.96));
+      transition:transform .18s ease, border-color .18s ease;
+    }
+
+    .source-link:hover{
+      transform:translateY(-3px);
+      border-color:var(--line-strong);
+    }
+
+    @media (max-width: 1180px){
+      .main-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width: 820px){
+      .panel-grid{
+        grid-template-columns:1fr;
+      }
+
+      .topbar{
+        flex-direction:column;
+        align-items:stretch;
+      }
+
+      .topbar-controls{
+        width:100%;
+      }
+
+      .menu-wrap{
+        width:100%;
+      }
+
+      .menu-btn{
+        width:100%;
+      }
+
+      .dropdown{
+        left:0;
+        right:auto;
+        width:100%;
+      }
+    }
+
+    @media (max-width: 640px){
+      .page{
+        width:min(100% - 16px, var(--max));
+        padding-top:12px;
+      }
+
+      .topbar,
+      .hero,
+      .branch-section,
+      .detail-panel,
+      .sources-section{
+        padding-left:16px;
+        padding-right:16px;
+      }
+
+      h1{
+        line-height:1.08;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="glow-layer"></div>
+
+  <main class="page">
+    <section class="topbar">
+      <div class="brand">
+        <div class="brand-top">U.S. History</div>
+        <div class="brand-title">1920s Concept Map</div>
+      </div>
+
+      <div class="topbar-controls">
+        <div class="menu-wrap">
+          <button id="menuBtn" class="menu-btn" type="button">All Branches ▾</button>
+          <div id="dropdownMenu" class="dropdown">
+            <button type="button" data-branch="economy">Economy</button>
+            <button type="button" data-branch="politics">Politics</button>
+            <button type="button" data-branch="social">Social Change</button>
+            <button type="button" data-branch="culture">Culture</button>
+            <button type="button" data-branch="technology">Technology</button>
+            <button type="button" data-branch="fear">Fear and Intolerance</button>
+            <button type="button" data-branch="african">African American Life</button>
+            <button type="button" data-branch="prohibition">Prohibition and Crime</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hero">
+      <p class="eyebrow">Main Idea</p>
+      <h1>The 1920s Concept Map</h1>
+      <p class="subtitle">
+        A clean summary of the main ideas of the 1920s based on the three required sources. Click any branch to instantly view the simple explanation.
+      </p>
+    </section>
+
+    <section class="main-grid">
+      <section class="branch-section">
+        <div class="section-head">
+          <h2>Concept Branches</h2>
+          <p>Pick any branch below. The information updates on the right without opening a new page.</p>
+        </div>
+
+        <div class="branch-grid">
+          <button class="branch-card" data-branch="economy">
+            <div class="branch-title">Economy</div>
+            <div class="branch-preview">Money, buying, factories, and the 1929 crash.</div>
+          </button>
+
+          <button class="branch-card" data-branch="politics">
+            <div class="branch-title">Politics</div>
+            <div class="branch-preview">Calm after war, business support, and immigration limits.</div>
+          </button>
+
+          <button class="branch-card" data-branch="social">
+            <div class="branch-title">Social Change</div>
+            <div class="branch-preview">Women vote, flappers, and changing daily life.</div>
+          </button>
+
+          <button class="branch-card" data-branch="culture">
+            <div class="branch-title">Culture</div>
+            <div class="branch-preview">Jazz, dancing, radio, and celebrities.</div>
+          </button>
+
+          <button class="branch-card" data-branch="technology">
+            <div class="branch-title">Technology</div>
+            <div class="branch-preview">Cars, planes, radio, and modern life.</div>
+          </button>
+
+          <button class="branch-card" data-branch="fear">
+            <div class="branch-title">Fear and Intolerance</div>
+            <div class="branch-preview">Red Scare, racism, anti-immigrant ideas, and the KKK.</div>
+          </button>
+
+          <button class="branch-card" data-branch="african">
+            <div class="branch-title">African American Life</div>
+            <div class="branch-preview">Great Migration, Harlem Renaissance, and unfair treatment.</div>
+          </button>
+
+          <button class="branch-card" data-branch="prohibition">
+            <div class="branch-title">Prohibition and Crime</div>
+            <div class="branch-preview">Alcohol ban, speakeasies, bootlegging, and crime.</div>
+          </button>
+        </div>
+      </section>
+
+      <section id="detailPanel" class="detail-panel">
+        <div id="panelContent" class="panel-content"></div>
+      </section>
+    </section>
+
+    <section class="sources-section">
+      <p class="eyebrow">Sources Used</p>
+      <h2>Links Used to Get the Information</h2>
+      <div class="source-list">
+        <a class="source-link" href="https://ephsknott1877.weebly.com/unit-5-roaring-twenties.html" target="_blank" rel="noopener noreferrer">
+          EPHS Knott — Roaring Twenties
+        </a>
+        <a class="source-link" href="https://blogs.loc.gov/headlinesandheroes/2023/01/american-fads-and-crazes-1920s/" target="_blank" rel="noopener noreferrer">
+          Library of Congress — American Fads and Crazes of the 1920s
+        </a>
+        <a class="source-link" href="https://www.genealogybank.com/blog/1920s-facts-interesting-important-historical-events.html" target="_blank" rel="noopener noreferrer">
+          GenealogyBank — 1920s Facts and Historical Events
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const branchData = {
+      economy: {
+        title: "Economy",
+        intro: "The 1920s had a strong economy for many people. Businesses grew, people bought more things, and the stock market went up fast. But the good times did not last.",
+        points: [
+          "people had more money to spend",
+          "many people bought cars, radios, and other new products",
+          "buying on credit became common",
+          "factories made goods faster and cheaper",
+          "the stock market grew a lot",
+          "the stock market crash in 1929 ended the boom"
+        ],
+        meaning: "The economy looked strong, but it was not as safe as it seemed.",
+        animation: "anim-rise"
+      },
+      politics: {
+        title: "Politics",
+        intro: "After World War I, many Americans wanted life to feel calm again. Leaders focused on business and on problems inside the country instead of outside it.",
+        points: [
+          "leaders wanted a return to normal life",
+          "the government supported business growth",
+          "the country stayed less involved with other nations",
+          "new laws limited immigration",
+          "many people supported ideas that kept outsiders out"
+        ],
+        meaning: "Politics in the 1920s focused on business, control, and looking inward.",
+        animation: "anim-left"
+      },
+      social: {
+        title: "Social Change",
+        intro: "The 1920s changed how many Americans lived. Women gained more freedom, city life grew, and younger people often challenged older rules.",
+        points: [
+          "women got the right to vote in 1920",
+          "flappers became a symbol of new freedom",
+          "fashion and behavior became less traditional",
+          "city life helped spread new ideas faster",
+          "the decade showed a break from many older social rules"
+        ],
+        meaning: "Social life became newer, faster, and more open than before.",
+        animation: "anim-right"
+      },
+      culture: {
+        title: "Culture",
+        intro: "The 1920s became known for entertainment and fun. Jazz spread, dance crazes became popular, radio reached homes, and celebrities became bigger than ever.",
+        points: [
+          "jazz became one of the most famous parts of the decade",
+          "dances like the Charleston became very popular",
+          "radio became a big part of everyday life",
+          "movie stars and sports stars became national celebrities",
+          "fads and crazes spread quickly across the country"
+        ],
+        meaning: "Culture in the 1920s was loud, modern, and full of energy.",
+        animation: "anim-zoom"
+      },
+      technology: {
+        title: "Technology",
+        intro: "New technology changed daily life in the 1920s. Cars made travel easier, radio connected people, and planes became exciting symbols of the future.",
+        points: [
+          "cars became common for many families",
+          "roads and travel became more important",
+          "radio helped people hear news and entertainment at home",
+          "aviation grew and became exciting",
+          "famous flights made airplanes seem modern and heroic"
+        ],
+        meaning: "Technology made life feel faster and more modern.",
+        animation: "anim-flip"
+      },
+      fear: {
+        title: "Fear and Intolerance",
+        intro: "The 1920s were not only about fun. Many people feared communism, blamed immigrants, and supported racist ideas and groups.",
+        points: [
+          "the Red Scare caused fear of communism",
+          "immigrants were often blamed or treated unfairly",
+          "the KKK grew again during this decade",
+          "racism remained strong",
+          "harmful fake science ideas were used to defend unfair treatment"
+        ],
+        meaning: "The decade had major fear, hate, and unfair treatment behind the glamour.",
+        animation: "anim-glow"
+      },
+      african: {
+        title: "African American Life",
+        intro: "Many African Americans moved north during the Great Migration. Black culture grew strongly in cities, especially during the Harlem Renaissance, but racism still remained.",
+        points: [
+          "many African Americans moved north for better chances",
+          "the Harlem Renaissance helped Black art, music, and writing grow",
+          "Black culture became more visible in American life",
+          "jazz was strongly connected to Black artists",
+          "racism and violence still continued"
+        ],
+        meaning: "There was cultural growth and creativity, but also continuing injustice.",
+        animation: "anim-drop"
+      },
+      prohibition: {
+        title: "Prohibition and Crime",
+        intro: "The government banned alcohol, but that did not stop drinking. Instead, illegal businesses and organized crime grew.",
+        points: [
+          "alcohol was banned by law",
+          "speakeasies became secret places to drink",
+          "bootlegging became a major illegal business",
+          "organized crime grew stronger",
+          "the law created problems instead of ending drinking"
+        ],
+        meaning: "Prohibition was meant to fix society, but it also helped crime grow.",
+        animation: "anim-soft"
+      }
+    };
+
+    const cards = document.querySelectorAll(".branch-card");
+    const panel = document.getElementById("detailPanel");
+    const panelContent = document.getElementById("panelContent");
+    const menuBtn = document.getElementById("menuBtn");
+    const dropdownMenu = document.getElementById("dropdownMenu");
+    const dropdownButtons = dropdownMenu.querySelectorAll("button");
+
+    function setActiveBranchEverywhere(key) {
+      cards.forEach(card => {
+        card.classList.toggle("active", card.dataset.branch === key);
+      });
+
+      dropdownButtons.forEach(button => {
+        button.classList.toggle("active", button.dataset.branch === key);
+      });
+    }
+
+    function renderBranch(key) {
+      const data = branchData[key];
+      if (!data) return;
+
+      setActiveBranchEverywhere(key);
+
+      panel.className = "detail-panel";
+      void panel.offsetWidth;
+      panel.classList.add(data.animation);
+
+      panelContent.innerHTML = `
+        <div class="panel-head">
+          <h2>${data.title}</h2>
+          <p>${data.intro}</p>
+        </div>
+
+        <div class="panel-grid">
+          <div class="panel-box">
+            <h3>Main Points</h3>
+            <ul>
+              ${data.points.map(point => `<li>${point}</li>`).join("")}
+            </ul>
+          </div>
+
+          <div class="panel-box">
+            <h3>Quick Meaning</h3>
+            <p class="big-line">${data.meaning}</p>
+            <div class="panel-note">Selected branch: ${data.title}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    cards.forEach(card => {
+      card.addEventListener("click", () => {
+        renderBranch(card.dataset.branch);
+      });
+    });
+
+    menuBtn.addEventListener("click", () => {
+      dropdownMenu.classList.toggle("open");
+      menuBtn.classList.toggle("open");
+    });
+
+    dropdownButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        renderBranch(button.dataset.branch);
+        dropdownMenu.classList.remove("open");
+        menuBtn.classList.remove("open");
+      });
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!dropdownMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+        dropdownMenu.classList.remove("open");
+        menuBtn.classList.remove("open");
+      }
+    });
+
+    renderBranch("economy");
+  </script>
+</body>
+</html>
