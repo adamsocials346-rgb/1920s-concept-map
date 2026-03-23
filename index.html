@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Why the League of Nations Failed</title>
+  <meta name="description" content="A slideshow-style website explaining the origins, actions, failures, and demise of the League of Nations." />
+  <style>
+    :root{
+      --bg:#07121f;
+      --bg2:#0c1b2f;
+      --card:rgba(10, 20, 35, 0.78);
+      --line:rgba(255,255,255,0.14);
+      --text:#eef4ff;
+      --muted:#adc1df;
+      --accent:#7cc6ff;
+      --accent-2:#9b8cff;
+      --accent-3:#6ff3d6;
+      --good:#9ff0a0;
+      --bad:#ff9aa2;
+      --shadow:0 20px 60px rgba(0,0,0,0.35);
+      --radius:28px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin:0; padding:0; background:
+      radial-gradient(circle at top left, rgba(124,198,255,0.18), transparent 28%),
+      radial-gradient(circle at 80% 20%, rgba(155,140,255,0.16), transparent 26%),
+      radial-gradient(circle at bottom right, rgba(111,243,214,0.12), transparent 24%),
+      linear-gradient(135deg, var(--bg), var(--bg2));
+      color:var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow:hidden;
+    }
+
+    .noise{
+      position:fixed; inset:0;
+      pointer-events:none; opacity:.08;
+      background-image:
+        linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size: 24px 24px;
+      mask-image: radial-gradient(circle at center, black 50%, transparent 88%);
+    }
+
+    .app{
+      height:100vh;
+      display:grid;
+      grid-template-columns: 280px 1fr;
+    }
+
+    .sidebar{
+      padding:26px 22px;
+      border-right:1px solid var(--line);
+      background:rgba(255,255,255,0.03);
+      backdrop-filter: blur(16px);
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .brand{
+      padding:16px 18px;
+      border:1px solid var(--line);
+      border-radius:22px;
+      background:rgba(255,255,255,0.03);
+      box-shadow: var(--shadow);
+    }
+
+    .brand .eyebrow{
+      font-size:.72rem;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      color:var(--accent-3);
+      margin-bottom:8px;
+      display:block;
+    }
+
+    .brand h1{
+      font-size:1.5rem;
+      line-height:1.06;
+      margin:0 0 10px;
+    }
+
+    .brand p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.45;
+      font-size:.95rem;
+    }
+
+    .meta{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .meta .pill{
+      padding:11px 12px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      font-size:.83rem;
+      color:var(--muted);
+    }
+
+    .meta strong{
+      display:block;
+      color:var(--text);
+      font-size:.95rem;
+      margin-top:2px;
+    }
+
+    .slide-list{
+      list-style:none;
+      margin:0;
+      padding:0;
+      overflow:auto;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .slide-btn{
+      width:100%;
+      text-align:left;
+      background:transparent;
+      color:var(--muted);
+      border:1px solid transparent;
+      border-radius:18px;
+      padding:12px 14px;
+      transition:.22s ease;
+      cursor:pointer;
+      display:grid;
+      grid-template-columns:38px 1fr;
+      gap:12px;
+      align-items:center;
+    }
+
+    .slide-btn:hover,
+    .slide-btn.active{
+      color:var(--text);
+      border-color:var(--line);
+      background:rgba(255,255,255,0.06);
+      transform:translateX(2px);
+    }
+
+    .slide-num{
+      width:38px; height:38px;
+      display:grid; place-items:center;
+      border-radius:12px;
+      background:linear-gradient(135deg, rgba(124,198,255,.18), rgba(155,140,255,.16));
+      border:1px solid rgba(255,255,255,.08);
+      font-weight:700;
+      color:var(--text);
+      font-size:.9rem;
+    }
+
+    .slide-name{
+      display:flex;
+      flex-direction:column;
+      gap:3px;
+    }
+
+    .slide-name strong{
+      font-size:.95rem;
+      line-height:1.15;
+    }
+
+    .slide-name span{
+      font-size:.78rem;
+      color:var(--muted);
+    }
+
+    .main{
+      position:relative;
+      overflow:hidden;
+    }
+
+    .progress-wrap{
+      position:absolute;
+      top:0; left:0; right:0;
+      height:5px;
+      background:rgba(255,255,255,.06);
+      z-index:10;
+    }
+
+    .progress{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+      transition:width .35s ease;
+    }
+
+    .slides{
+      height:100%;
+      display:flex;
+      transition:transform .55s cubic-bezier(.22,.8,.23,1);
+    }
+
+    .slide{
+      min-width:100%;
+      height:100%;
+      padding:40px 38px 96px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+    }
+
+    .slide::before,
+    .slide::after{
+      content:"";
+      position:absolute;
+      border-radius:50%;
+      filter:blur(10px);
+      opacity:.28;
+      pointer-events:none;
+    }
+
+    .slide::before{
+      width:280px; height:280px;
+      background:rgba(124,198,255,.18);
+      top:5%; right:8%;
+    }
+
+    .slide::after{
+      width:180px; height:180px;
+      background:rgba(155,140,255,.18);
+      bottom:8%; left:5%;
+    }
+
+    .card{
+      width:min(1180px, 100%);
+      max-height:100%;
+      overflow:auto;
+      padding:34px;
+      border-radius:var(--radius);
+      border:1px solid var(--line);
+      background:var(--card);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+      position:relative;
+    }
+
+    .card-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:18px;
+      margin-bottom:22px;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:.78rem;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      color:var(--accent-3);
+      margin-bottom:12px;
+    }
+
+    .eyebrow::before{
+      content:"";
+      width:10px; height:10px;
+      border-radius:50%;
+      background:linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow:0 0 18px rgba(124,198,255,.8);
+    }
+
+    h2{
+      margin:0;
+      font-size:clamp(2rem, 4vw, 3.3rem);
+      line-height:1.02;
+    }
+
+    .subtitle{
+      margin:10px 0 0;
+      color:var(--muted);
+      max-width:760px;
+      line-height:1.5;
+      font-size:1.02rem;
+    }
+
+    .chapter{
+      padding:10px 14px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:var(--muted);
+      white-space:nowrap;
+      font-size:.84rem;
+    }
+
+    .hero-grid,
+    .grid-2,
+    .grid-3,
+    .grid-4{
+      display:grid;
+      gap:18px;
+    }
+
+    .hero-grid{ grid-template-columns: 1.25fr .9fr; align-items:start; }
+    .grid-2{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .grid-3{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .grid-4{ grid-template-columns: repeat(4, minmax(0,1fr)); }
+
+    .panel{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      border-radius:24px;
+      padding:20px;
+    }
+
+    .panel h3{
+      margin:0 0 10px;
+      font-size:1.12rem;
+    }
+
+    .panel p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.55;
+      font-size:.98rem;
+    }
+
+    .big-point{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      padding:18px;
+      border-radius:22px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+    }
+
+    .big-point .icon{
+      width:46px; height:46px;
+      flex:0 0 46px;
+      border-radius:16px;
+      display:grid; place-items:center;
+      background:linear-gradient(135deg, rgba(124,198,255,.22), rgba(155,140,255,.24));
+      border:1px solid rgba(255,255,255,.08);
+      font-size:1.2rem;
+    }
+
+    .big-point h3{
+      margin:0 0 8px;
+      font-size:1.08rem;
+    }
+
+    .big-point p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.52;
+    }
+
+    .timeline{
+      position:relative;
+      padding-left:24px;
+      display:grid;
+      gap:14px;
+    }
+
+    .timeline::before{
+      content:"";
+      position:absolute;
+      left:9px; top:2px; bottom:2px;
+      width:2px;
+      background:linear-gradient(180deg, var(--accent), transparent);
+      opacity:.8;
+    }
+
+    .event{
+      position:relative;
+      padding:16px 16px 16px 18px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.035);
+      border-radius:20px;
+    }
+
+    .event::before{
+      content:"";
+      position:absolute;
+      left:-20px; top:22px;
+      width:10px; height:10px;
+      border-radius:50%;
+      background:var(--accent-3);
+      box-shadow:0 0 0 5px rgba(111,243,214,.12);
+    }
+
+    .event .date{
+      font-size:.78rem;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+      color:var(--accent);
+      margin-bottom:8px;
+    }
+
+    .event h4{
+      margin:0 0 6px;
+      font-size:1rem;
+    }
+
+    .event p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .quote-box{
+      border-radius:24px;
+      padding:24px;
+      border:1px solid var(--line);
+      background:
+        linear-gradient(135deg, rgba(124,198,255,.12), rgba(155,140,255,.08)),
+        rgba(255,255,255,.04);
+    }
+
+    .quote-box blockquote{
+      margin:0;
+      font-size:1.35rem;
+      line-height:1.34;
+      font-weight:700;
+    }
+
+    .quote-box p{
+      margin:12px 0 0;
+      color:var(--muted);
+      line-height:1.5;
+      font-size:.98rem;
+    }
+
+    ul.clean{
+      list-style:none;
+      padding:0;
+      margin:0;
+      display:grid;
+      gap:12px;
+    }
+
+    ul.clean li{
+      padding:14px 16px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:var(--muted);
+      line-height:1.52;
+    }
+
+    ul.clean li strong{
+      color:var(--text);
+    }
+
+    .split-stat{
+      display:grid;
+      grid-template-columns:.95fr 1.05fr;
+      gap:18px;
+      margin-top:18px;
+    }
+
+    .stat-box{
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:20px;
+      background:rgba(255,255,255,.04);
+    }
+
+    .stat-box .num{
+      font-size:2.2rem;
+      font-weight:800;
+      line-height:1;
+      margin-bottom:10px;
+      background:linear-gradient(90deg, var(--accent), var(--accent-3));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+
+    .stat-box p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .idea-tag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(111,243,214,.1);
+      color:var(--accent-3);
+      border:1px solid rgba(111,243,214,.18);
+      font-size:.8rem;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      margin-bottom:12px;
+    }
+
+    .mistake{
+      padding:18px;
+      border-radius:22px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .mistake::after{
+      content:"";
+      position:absolute;
+      inset:auto -15% -45% auto;
+      width:160px; height:160px;
+      background:radial-gradient(circle, rgba(255,154,162,.22), transparent 68%);
+      pointer-events:none;
+    }
+
+    .mistake h3{ margin:0 0 10px; font-size:1.12rem; }
+    .mistake p{ margin:0; color:var(--muted); line-height:1.55; }
+
+    .sources{
+      display:grid;
+      gap:12px;
+    }
+
+    .source-link{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      padding:14px 16px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      text-decoration:none;
+      color:inherit;
+      transition:.2s ease;
+    }
+
+    .source-link:hover{
+      transform:translateY(-1px);
+      background:rgba(255,255,255,.07);
+    }
+
+    .source-link strong{
+      display:block;
+      margin-bottom:4px;
+      font-size:.96rem;
+    }
+
+    .source-link span{
+      color:var(--muted);
+      font-size:.88rem;
+      line-height:1.45;
+    }
+
+    .source-link em{
+      color:var(--accent-3);
+      font-style:normal;
+      font-size:.82rem;
+      white-space:nowrap;
+      align-self:center;
+    }
+
+    .controls{
+      position:absolute;
+      left:28px; right:28px; bottom:24px;
+      z-index:12;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      pointer-events:none;
+    }
+
+    .control-cluster{
+      display:flex;
+      gap:10px;
+      pointer-events:auto;
+    }
+
+    button.ctrl{
+      border:none;
+      color:var(--text);
+      background:rgba(255,255,255,.08);
+      border:1px solid var(--line);
+      padding:12px 16px;
+      border-radius:16px;
+      cursor:pointer;
+      font-weight:700;
+      transition:.2s ease;
+      backdrop-filter:blur(10px);
+    }
+
+    button.ctrl:hover{
+      transform:translateY(-1px);
+      background:rgba(255,255,255,.12);
+    }
+
+    .slide-indicator{
+      pointer-events:auto;
+      padding:12px 16px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.07);
+      color:var(--muted);
+      font-weight:600;
+      backdrop-filter:blur(10px);
+    }
+
+    .kbd{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:28px;
+      height:28px;
+      padding:0 8px;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      font-size:.82rem;
+      font-weight:800;
+    }
+
+    .footer-note{
+      margin-top:16px;
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.5;
+    }
+
+    @media (max-width: 1100px){
+      .app{ grid-template-columns: 1fr; }
+      .sidebar{
+        position:absolute;
+        left:16px; top:16px;
+        width:min(360px, calc(100% - 32px));
+        z-index:20;
+        max-height:calc(100vh - 32px);
+        transform:translateX(-105%);
+        transition:.35s ease;
+        border:1px solid var(--line);
+        border-radius:26px;
+        box-shadow:var(--shadow);
+      }
+      .sidebar.open{ transform:translateX(0); }
+      .hero-grid, .grid-2, .grid-3, .grid-4, .split-stat{
+        grid-template-columns: 1fr;
+      }
+      .slide{ padding:28px 18px 92px; }
+      .card{ padding:24px; }
+      .controls{ left:18px; right:18px; bottom:16px; }
+      .mobile-menu{
+        display:inline-flex !important;
+      }
+    }
+
+    @media (max-width: 720px){
+      h2{ font-size:2rem; }
+      .card-header{ flex-direction:column; }
+      .slide-indicator{ display:none; }
+      .brand h1{ font-size:1.3rem; }
+      .quote-box blockquote{ font-size:1.15rem; }
+    }
+
+    .mobile-menu{
+      display:none;
+      position:absolute;
+      top:16px; left:16px;
+      z-index:21;
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+
+  <button class="ctrl mobile-menu" id="menuBtn" aria-label="Open slide menu">☰ Slides</button>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <span class="eyebrow">History Project</span>
+        <h1>Why the League of Nations Failed</h1>
+        <p>A slideshow website with clear facts, strong argument, and simple direct wording.</p>
+      </div>
+
+      <div class="meta">
+        <div class="pill">Slides<strong>9 total</strong></div>
+        <div class="pill">Focus<strong>Failure + argument</strong></div>
+      </div>
+
+      <ul class="slide-list" id="slideList">
+        <li><button class="slide-btn active" data-slide="0"><span class="slide-num">1</span><span class="slide-name"><strong>Title</strong><span>Overview and claim</span></span></button></li>
+        <li><button class="slide-btn" data-slide="1"><span class="slide-num">2</span><span class="slide-name"><strong>Origins</strong><span>How, who, why</span></span></button></li>
+        <li><button class="slide-btn" data-slide="2"><span class="slide-num">3</span><span class="slide-name"><strong>Actions</strong><span>Successes and work</span></span></button></li>
+        <li><button class="slide-btn" data-slide="3"><span class="slide-num">4</span><span class="slide-name"><strong>Cracks</strong><span>Conflicts and failures</span></span></button></li>
+        <li><button class="slide-btn" data-slide="4"><span class="slide-num">5</span><span class="slide-name"><strong>Demise</strong><span>End of the League</span></span></button></li>
+        <li><button class="slide-btn" data-slide="5"><span class="slide-num">6</span><span class="slide-name"><strong>Idea 1–2</strong><span>Weak from the start</span></span></button></li>
+        <li><button class="slide-btn" data-slide="6"><span class="slide-num">7</span><span class="slide-name"><strong>Idea 3</strong><span>Big mistakes</span></span></button></li>
+        <li><button class="slide-btn" data-slide="7"><span class="slide-num">8</span><span class="slide-name"><strong>Idea 4</strong><span>What it should have done</span></span></button></li>
+        <li><button class="slide-btn" data-slide="8"><span class="slide-num">9</span><span class="slide-name"><strong>Conclusion</strong><span>Main reasons + sources</span></span></button></li>
+      </ul>
+    </aside>
+
+    <main class="main">
+      <div class="progress-wrap"><div class="progress" id="progressBar"></div></div>
+      <div class="slides" id="slides">
+        <!-- Slide 1 -->
+        <section class="slide">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="eyebrow">Slide 1 • Main Claim</div>
+                <h2>The League of Nations Failed Because It Was Weak, Slow, and Easy to Ignore</h2>
+                <p class="subtitle">The League had a good goal. It wanted peace after World War I. But it did not have enough power, unity, or support to stop aggressive countries in the 1930s.</p>
+              </div>
+              <div class="chapter">Opening</div>
+            </div>
+
+            <div class="hero-grid">
+              <div class="quote-box">
+                <blockquote>My argument: the League failed most because major powers did not fully support it, it had no real force, and it made weak choices during major crises.</blockquote>
+                <p>This presentation explains the League’s origins, its actions, its collapse, and four key reasons why it failed.</p>
+              </div>
+
+              <div class="panel">
+                <h3>What this slideshow covers</h3>
+                <ul class="clean">
+                  <li><strong>Origins:</strong> how it formed, who shaped it, and why it existed.</li>
+                  <li><strong>Actions:</strong> the disputes it handled and the successes it did have.</li>
+                  <li><strong>Demise:</strong> the choices and events that destroyed its authority.</li>
+                  <li><strong>My ideas:</strong> four clear reasons the League failed.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="split-stat">
+              <div class="stat-box">
+                <div class="num">1920</div>
+                <p>The League officially began when the Treaty of Versailles came into force.</p>
+              </div>
+              <div class="stat-box">
+                <div class="num">1946</div>
+                <p>The League was formally dissolved after World War II and replaced by the United Nations.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 2 -->
+        <section class="slide">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="eyebrow">Slide 2 • Origins</div>
+                <h2>How the League Formed, Who Was Involved, and Why It Was Created</h2>
+                <p class="subtitle">The League of Nations came out of the peace talks after World War I. Leaders wanted a system that would stop another huge war.</p>
+              </div>
+              <div class="chapter">League of Nations Origins</div>
+            </div>
+
+            <div class="grid-3">
+              <div class="big-point">
+                <div class="icon">🏛️</div>
+                <div>
+                  <h3>How did it form?</h3>
+                  <p>The Covenant of the League was written at the Paris Peace Conference in 1919. It was placed inside the Treaty of Versailles. The League officially started on January 10, 1920.</p>
+                </div>
+              </div>
+
+              <div class="big-point">
+                <div class="icon">👥</div>
+                <div>
+                  <h3>Who was involved?</h3>
+                  <p>Woodrow Wilson strongly pushed the idea. Britain, France, Italy, Japan, and other Allied powers helped shape it. Lord Robert Cecil, Jan Smuts, and Léon Bourgeois also played important roles.</p>
+                </div>
+              </div>
+
+              <div class="big-point">
+                <div class="icon">🕊️</div>
+                <div>
+                  <h3>Why did it form?</h3>
+                  <p>It was meant to keep peace, encourage cooperation, reduce arms, and settle disputes without war. After World War I, many leaders believed a new system was necessary.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="timeline" style="margin-top:20px;">
+              <div class="event">
+                <div class="date">January 1918</div>
+                <h4>Wilson presents the Fourteen Points</h4>
+                <p>The final point called for a general association of nations to protect countries and preserve peace.</p>
+              </div>
+              <div class="event">
+                <div class="date">1919</div>
+                <h4>Paris Peace Conference drafts the Covenant</h4>
+                <p>The League’s rules were negotiated as part of the postwar peace settlement.</p>
+              </div>
+              <div class="event">
+                <div class="date">January 10, 1920</div>
+                <h4>The League officially begins</h4>
+                <p>It begins when the Treaty of Versailles takes effect.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 3 -->
+        <section class="slide">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="eyebrow">Slide 3 • Actions</div>
+                <h2>What the League Did, Where It Succeeded, and Where Tension Appeared</h2>
+                <p class="subtitle">The League was not useless. It had some real successes in the 1920s. But the limits of its power also became clear.</p>
+              </div>
+              <div class="chapter">League of Nations Actions</div>
+            </div>
+
+            <div class="grid-2">
+              <div class="panel">
+                <h3>What did they do?</h3>
+                <ul class="clean">
+                  <li><strong>Settled disputes:</strong> It helped solve the Åland Islands dispute in 1921 and the Greco-Bulgarian crisis in 1925.</li>
+                  <li><strong>Helped refugees:</strong> The League supported refugee protection, including the Nansen Passport for stateless people.</li>
+                  <li><strong>Worked on social issues:</strong> It also dealt with child welfare, health, slavery, and anti-trafficking efforts.</li>
+                </ul>
+              </div>
+
+              <div class="panel">
+                <h3>Did they have success?</h3>
+                <ul class="clean">
+                  <li><strong>Yes, at first.</strong> The League had its best years in the 1920s, especially in smaller disputes.</li>
+                  <li><strong>It could help when big powers agreed.</strong> That is why some early cases ended peacefully.</li>
+                  <li><strong>It looked promising.</strong> For a time, people believed international cooperation could work.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="grid-3" style="margin-top:18px;">
+              <div class="mistake">
+                <h3>Success Example 1</h3>
+                <p>The Åland Islands dispute between Sweden and Finland was settled peacefully. That showed the League could mediate smaller conflicts.</p>
+              </div>
+              <div class="mistake">
+                <h3>Success Example 2</h3>
+                <p>In 1925, the League helped stop the Greco-Bulgarian border incident before it became a larger war.</p>
+              </div>
+              <div class="mistake">
+                <h3>Warning Sign</h3>
+                <p>Even in the 1920s, the League struggled when a major power had strong political interests. That problem became much worse later.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 4 -->
+        <section class="slide">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="eyebrow">Slide 4 • Conflicts</div>
+                <h2>The League’s Biggest Conflicts Exposed Its Weakness</h2>
+                <p class="subtitle">The real test came when powerful countries ignored the rules. That is where the League started to fall apart.</p>
+              </div>
+              <div class="chapter">Successes vs. Failures</div>
+            </div>
+
+            <div class="timeline">
+              <div class="event">
+                <div class="date">1931</div>
+                <h4>Japan invades Manchuria</h4>
+                <p>The League failed to stop Japan’s occupation. This badly damaged its credibility.</p>
+              </div>
+              <div class="event">
+                <div class="date">1933</div>
+                <h4>Germany leaves the League</h4>
+                <p>Nazi Germany withdrew. The loss of a major state made the League look weaker.</p>
+              </div>
+              <div class="event">
+                <div class="date">1935</div>
+                <h4>Italy invades Abyssinia (Ethiopia)</h4>
+                <p>The League reacted with weak sanctions. Italy still won. This showed the League could not enforce collective security.</p>
+              </div>
+              <div class="event">
+                <div class="date">1930s</div>
+                <h4>Fear replaces cooperation</h4>
+                <p>As tension rose in Europe and Asia, countries put self-interest first. The League could not hold them together.</p>
+              </div>
+            </div>
+
+            <div class="grid-2" style="margin-top:18px;">
+              <div class="panel">
+                <h3>Were there conflicts?</h3>
+                <p>Yes. The League faced disputes from the start, but the most damaging ones came in the 1930s. Manchuria and Abyssinia were the moments that proved the League was not strong enough to stop aggressive states.</p>
+              </div>
+              <div class="panel">
+                <h3>Why these conflicts mattered</h3>
+                <p>Once countries saw that powerful nations could break the rules and get away with it, the League lost respect. A peace organization without authority is basically just a meeting club with nice stationery.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 5 -->
+        <section class="slide">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="eyebrow">Slide 5 • Demise</div>
+                <h2>What Choices Led to the End, and What Event Effectively Finished the League?</h2>
+                <p class="subtitle">The League did not collapse in one day. It slowly lost power because of bad structure, weak decisions, and the rise of aggressive dictatorships.</p>
+              </div>
+              <div class="chapter">League of Nations Demise</div>
+            </div>
+
+            <div class="grid-2">
+              <div class="panel">
+                <h3>Choices that led to the end</h3>
+                <ul class="clean">
+                  <li><strong>It depended on member states</strong> instead of having its own force.</li>
+                  <li><strong>It acted too slowly</strong> during major crises.</li>
+                  <li><strong>It used weak sanctions</strong> against Italy and could not stop Japan.</li>
+                  <li><strong>It lost major members</strong> like Germany, Japan, and later Italy.</li>
+                </ul>
+              </div>
+
+              <div class="panel">
+                <h3>The final event</h3>
+                <p>The outbreak of World War II in 1939 proved that the League had failed in its main job: preventing another world war. It was formally dissolved in April 1946 and replaced by the United Nations.</p>
+              </div>
+            </div>
+
+            <div class="split-stat">
+              <div class="stat-box">
+                <div class="num">1939</div>
+                <p>World War II effectively ended the League as a serious peacekeeping organization.</p>
+              </div>
+              <div class="stat-box">
+                <div class="num">April 1946</div>
+                <p>The League held its final session and transferred responsibilities to the United Nations.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 6 -->
+        <section class="slide">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="eyebrow">Slide 6 • My Ideas</div>
+                <h2>Idea 1 and Idea 2: The League Was Weak From the Start</h2>
+                <p class="subtitle">These are the first two reasons I think mattered most.</p>
+              </div>
+              <div class="chapter">Personal Argument</div>
+            </div>
+
+            <div class="grid-2">
+              <div class="panel">
+                <div class="idea-tag">Idea 1</div>
+                <h3>The League was missing full support from major powers</h3>
+                <p>The United States never joined, even though Wilson had pushed for the League. That was a huge problem. A world peace organization looks weak when one of the biggest powers stays out. Later, Germany, Japan, and Italy also left or ignored it. That made the League even less respected.</p>
+              </div>
+
+              <div class="panel">
+                <div class="idea-tag">Idea 2</div>
+                <h3>The League had no army and no real force</h3>
+                <p>The League could talk, investigate, and suggest sanctions, but it could not physically stop aggression on its own. It depended on member nations to act. If those nations refused, the League had no backup plan. That made its threats weak.</p>
+              </div>
+            </div>
+
+            <div class="footer-note">
+              These two problems mattered most because they existed before the big crises even happened. The League entered the 1930s already injured.
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 7 -->
+        <section class="slide">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="eyebrow">Slide 7 • My Ideas</div>
+                <h2>Idea 3: The League Made Its Biggest Mistakes During Real Tests</h2>
+                <p class="subtitle">My third reason is about decisions. The League had chances to prove itself, and it failed those chances.</p>
+              </div>
+              <div class="chapter">Biggest Mistakes</div>
+            </div>
+
+            <div class="grid-3">
+              <div class="mistake">
+                <h3>Mistake 1: It moved too slowly</h3>
+                <p>By the time the League discussed a crisis, the aggressor often had already gained ground. Slow action helped countries like Japan and Italy.</p>
+              </div>
+              <div class="mistake">
+                <h3>Mistake 2: It used weak sanctions</h3>
+                <p>The sanctions against Italy during the Abyssinia crisis were not strong enough to stop the invasion. That made the League look afraid and inconsistent.</p>
+              </div>
+              <div class="mistake">
+                <h3>Mistake 3: It protected peace in small cases, not big ones</h3>
+                <p>The League could handle smaller disputes. But when a powerful country challenged it, the system broke. That showed the organization was not built for the hardest situations.</p>
+              </div>
+            </div>
+
+            <div class="quote-box" style="margin-top:18px;">
+              <blockquote>My third main idea: the League failed because it lost credibility in Manchuria and Abyssinia. Once that happened, its warnings stopped meaning much.</blockquote>
+              <p>In history, reputation matters. A peace system only works when countries believe the rules will actually be enforced.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 8 -->
+        <section class="slide">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="eyebrow">Slide 8 • My Ideas</div>
+                <h2>Idea 4: What the League Should Have Done Differently</h2>
+                <p class="subtitle">My fourth reason is about design and leadership. The League needed a stronger system, not just better speeches.</p>
+              </div>
+              <div class="chapter">What It Could Change</div>
+            </div>
+
+            <div class="grid-2">
+              <div class="panel">
+                <h3>What was wrong when it formed?</h3>
+                <ul class="clean">
+                  <li><strong>It relied too much on cooperation</strong> during a time when countries still cared most about their own national interests.</li>
+                  <li><strong>It was tied to the postwar settlement</strong> that many people saw as unfair or unstable.</li>
+                  <li><strong>It looked idealistic</strong> but did not have the hard power needed to back up its promises.</li>
+                </ul>
+              </div>
+
+              <div class="panel">
+                <h3>What could it have done differently?</h3>
+                <ul class="clean">
+                  <li><strong>Bring major powers in</strong> and keep them committed.</li>
+                  <li><strong>Create faster enforcement</strong> for invasions and treaty violations.</li>
+                  <li><strong>Use stronger, united sanctions</strong> before aggressors became harder to stop.</li>
+                  <li><strong>Separate peacekeeping from revenge politics</strong> linked to the Treaty of Versailles.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="panel" style="margin-top:18px;">
+              <div class="idea-tag">Idea 4</div>
+              <h3>My final argument</h3>
+              <p>I think the League failed because its design did not match the world it was trying to control. It was built for cooperation, but the 1930s were driven by nationalism, fear, and aggression. A weak organization could not stop strong dictators.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 9 -->
+        <section class="slide">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="eyebrow">Slide 9 • Conclusion</div>
+                <h2>The Biggest Reasons the League Failed</h2>
+                <p class="subtitle">These are the four points that stand out the most from the research.</p>
+              </div>
+              <div class="chapter">Conclusion + Sources</div>
+            </div>
+
+            <div class="grid-4">
+              <div class="panel"><h3>1. Missing major support</h3><p>The United States never joined, and later major states left or ignored the League.</p></div>
+              <div class="panel"><h3>2. No real force</h3><p>The League had no army, so it depended on members that often refused to act.</p></div>
+              <div class="panel"><h3>3. Weak decisions</h3><p>It failed badly in Manchuria and Abyssinia, which destroyed its credibility.</p></div>
+              <div class="panel"><h3>4. The wrong design</h3><p>Its peaceful structure could not control a world moving toward dictatorship and war.</p></div>
+            </div>
+
+            <div class="quote-box" style="margin-top:18px;">
+              <blockquote>Final stance: the League of Nations failed because it was never strong enough to make powerful countries follow its rules.</blockquote>
+              <p>It had good ideas and some real success, but not enough power to stop another world war.</p>
+            </div>
+
+            <div class="panel" style="margin-top:18px;">
+              <h3>Research sources used</h3>
+              <div class="sources">
+                <a class="source-link" href="https://www.ungeneva.org/en/about/league-of-nations/background" target="_blank" rel="noopener noreferrer">
+                  <div>
+                    <strong>UN Geneva — Historical Background</strong>
+                    <span>Used for founding details, the Covenant, and the role of Woodrow Wilson and other creators.</span>
+                  </div>
+                  <em>Official source</em>
+                </a>
+
+                <a class="source-link" href="https://www.ungeneva.org/en/about/league-of-nations/at-work" target="_blank" rel="noopener noreferrer">
+                  <div>
+                    <strong>UN Geneva — The League at Work</strong>
+                    <span>Used for successes in the 1920s, Manchuria, Abyssinia, and the League’s collapse in the 1930s.</span>
+                  </div>
+                  <em>Official source</em>
+                </a>
+
+                <a class="source-link" href="https://history.state.gov/milestones/1914-1920/league" target="_blank" rel="noopener noreferrer">
+                  <div>
+                    <strong>U.S. State Department — The League of Nations, 1920</strong>
+                    <span>Used for the U.S. Senate rejection and the impact of the United States not joining.</span>
+                  </div>
+                  <em>Official source</em>
+                </a>
+
+                <a class="source-link" href="https://www.senate.gov/about/powers-procedures/treaties/senate-rejects-treaty-of-versailles.htm" target="_blank" rel="noopener noreferrer">
+                  <div>
+                    <strong>U.S. Senate — Treaty of Versailles Rejection</strong>
+                    <span>Used for the Senate’s rejection of the treaty and the League membership issue.</span>
+                  </div>
+                  <em>Official source</em>
+                </a>
+
+                <a class="source-link" href="https://www.ungeneva.org/en/about/league-of-nations/covenant" target="_blank" rel="noopener noreferrer">
+                  <div>
+                    <strong>UN Geneva — Covenant of the League of Nations</strong>
+                    <span>Used for the League’s purpose, structure, and official seat in Geneva.</span>
+                  </div>
+                  <em>Official source</em>
+                </a>
+
+                <a class="source-link" href="https://www.un.org/en/un-chronicle/reflections-75th-anniversary-international-court-justice" target="_blank" rel="noopener noreferrer">
+                  <div>
+                    <strong>United Nations — League final session</strong>
+                    <span>Used for the April 1946 transfer and end of the League.</span>
+                  </div>
+                  <em>Official source</em>
+                </a>
+              </div>
+              <p class="footer-note">Tip: Press <span class="kbd">←</span> and <span class="kbd">→</span> to move through slides, or use the buttons below.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="controls">
+        <div class="control-cluster">
+          <button class="ctrl" id="prevBtn">← Previous</button>
+          <button class="ctrl" id="nextBtn">Next →</button>
+          <button class="ctrl" id="printBtn">Print / Save PDF</button>
+        </div>
+        <div class="slide-indicator" id="slideIndicator">Slide 1 of 9</div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const slides = document.getElementById('slides');
+    const slideButtons = [...document.querySelectorAll('.slide-btn')];
+    const progressBar = document.getElementById('progressBar');
+    const indicator = document.getElementById('slideIndicator');
+    const sidebar = document.getElementById('sidebar');
+    const menuBtn = document.getElementById('menuBtn');
+
+    let current = 0;
+    const total = slideButtons.length;
+
+    function updateSlide(index){
+      current = Math.max(0, Math.min(index, total - 1));
+      slides.style.transform = `translateX(-${current * 100}%)`;
+      slideButtons.forEach((btn, i) => btn.classList.toggle('active', i === current));
+      progressBar.style.width = `${((current + 1) / total) * 100}%`;
+      indicator.textContent = `Slide ${current + 1} of ${total}`;
+      if (window.innerWidth <= 1100) {
+        sidebar.classList.remove('open');
+      }
+    }
+
+    slideButtons.forEach(btn => {
+      btn.addEventListener('click', () => updateSlide(Number(btn.dataset.slide)));
+    });
+
+    document.getElementById('prevBtn').addEventListener('click', () => updateSlide(current - 1));
+    document.getElementById('nextBtn').addEventListener('click', () => updateSlide(current + 1));
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+        e.preventDefault();
+        updateSlide(current + 1);
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        updateSlide(current - 1);
+      }
+      if (e.key.toLowerCase() === 'home') updateSlide(0);
+      if (e.key.toLowerCase() === 'end') updateSlide(total - 1);
+      if (e.key.toLowerCase() === 'm' && window.innerWidth <= 1100) {
+        sidebar.classList.toggle('open');
+      }
+    });
+
+    menuBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
+
+    // Basic swipe support
+    let startX = null;
+    slides.addEventListener('touchstart', (e) => startX = e.touches[0].clientX, { passive: true });
+    slides.addEventListener('touchend', (e) => {
+      if (startX === null) return;
+      const endX = e.changedTouches[0].clientX;
+      const diff = startX - endX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) updateSlide(current + 1);
+        else updateSlide(current - 1);
+      }
+      startX = null;
+    }, { passive: true });
+
+    updateSlide(0);
+  </script>
+</body>
+</html>
